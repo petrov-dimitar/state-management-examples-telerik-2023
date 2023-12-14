@@ -1,0 +1,14 @@
+.App {
+  text-align: center;
+}
+
+*{
+  padding: 4px;
+  margin: 16px;
+}
+
+
+.border{
+  border: 1px solid black;
+}
+
