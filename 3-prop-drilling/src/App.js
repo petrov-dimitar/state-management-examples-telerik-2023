@@ -7,7 +7,7 @@ function App() {
     <div className="App border">
       <h3>App Component</h3>
       <AddTodoComponent />
-      <ListTodoComponent />
+      <ListTodoComponent username={username} />
     </div>
   );
 }
@@ -20,29 +20,29 @@ function AddTodoComponent() {
   );
 }
 
-function ListTodoComponent() {
+function ListTodoComponent({ username }) {
   return (
     <div className='border'>
       <h3>List Of Todos Component</h3>
-      <TodoItemComponent />
+      <TodoItemComponent username={username} />
     </div>
   );
 }
 
-function TodoItemComponent() {
+function TodoItemComponent({ username }) {
   return (
     <div className='border'>
       <h3>Todo Item Component</h3>
-      <TodoItemNoteComponent />
+      <TodoItemNoteComponent username={username} />
     </div>
   )
 }
 
-function TodoItemNoteComponent() {
+function TodoItemNoteComponent({ username }) {
   return (
     <div className='border'>
       <h3 >Todo Item Note</h3>
-      <span>User:</span>
+      <span>User: {username}</span>
     </div>
   )
 }

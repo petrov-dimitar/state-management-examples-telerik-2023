@@ -1,49 +1,50 @@
 import './App.css';
 import React, { useState } from 'react';
 
-// Level 1
 function App() {
   const [username, setUsername] = useState("george89")
   return (
     <div className="App border">
-      <h3>App</h3>
-      <AddTodo />
-      <ListTodo username={username} />
+      <h3>App Component</h3>
+      <AddTodoComponent />
+      <ListTodoComponent>
+        <TodoItemComponent>
+          <TodoItemNoteComponent username={username} />
+        </TodoItemComponent>
+      </ListTodoComponent>
     </div>
   );
 }
 
-// Level 2
-function AddTodo() {
+function AddTodoComponent() {
   return (
     <div className='border'>
-      <h3>Add Todo</h3>
+      <h3>Add Todo Component</h3>
     </div>
   );
 }
 
-// Level2
-function ListTodo({ username }) {
+function ListTodoComponent({ children }) {
   return (
     <div className='border'>
-      <h3>List Of Todos</h3>
-      <TodoItem username={username} />
+      <h3>List Of Todos Component</h3>
+      {children}
+      {/* <TodoItemComponent /> */}
     </div>
   );
 }
 
-// Level 3
-function TodoItem({ username }) {
+function TodoItemComponent({ children }) {
   return (
     <div className='border'>
-      <h3>Todo Item</h3>
-      <TodoItemNote username={username} />
+      <h3>Todo Item Component</h3>
+      {children}
+      {/* <TodoItemNoteComponent /> */}
     </div>
   )
 }
 
-// Level 4 
-function TodoItemNote({ username }) {
+function TodoItemNoteComponent({ username }) {
   return (
     <div className='border'>
       <h3 >Todo Item Note</h3>

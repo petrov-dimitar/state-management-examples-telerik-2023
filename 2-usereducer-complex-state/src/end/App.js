@@ -1,63 +1,104 @@
 import './App.css';
-import React, { useReducer } from 'react';
+import react, { useState, useReducer } from 'react';
+import { RequirementsList } from './RequirementsList.js';
 
-const initialState = {
-  fields: {
-    name: '',
-    date: '',
-  },
-  items: [{
-    id: 1,
-    name: "example",
-    date: "2023-12-02", // Add a sample date
-  }]
+const initialReducerState = {
+  isSubmitting: false,
+  userInput: '',
+  itemList: [{ id: 1, title: "My first todo" }],
+  message: { type: null, value: "" },
+
+}
+
+const delay = ms => new Promise(res => setTimeout(res, ms));
+function reducer(state, action) {
+  switch (action.type) {
+    case 'set_user_input': {
+      return {
+        ...state,
+        userInput: action.value
+      };
+    }
+    case 'set_is_submitting': {
+      return {
+        ...state,
+        isSubmitting: action.value,
+        message: { type: action, value: 'Adding the item...' }
+      };
+    }
+    case 'set_message': {
+      return {
+        ...state,
+        message: action.value
+      };
+    }
+    case 'set_item_list': {
+      return {
+        ...state,
+        itemList: [
+          ...state.itemList,
+          {
+            id: [state.itemList.length - 1].id + 1,
+            title: action.value
+          }
+        ]
+      }
+    }
+    default: return state;
+  }
 }
 
 
-const reducer = (state, action) => {
-  if (action.type === "updateField") {
-    console.log("Update Field");
-    return { ...state, fields: { ...state.fields, [action.value.field]: action.value.value } };
-  }
-  if (action.type === "addItem") {
-    console.log("addItem");
-
-    return { ...state, items: [...state.items, { id: state.items.length + 1, ...state.fields }] };
-  }
-
-  // Handle unknown actions
-  console.warn("Unknown action type:", action.type);
-  return state;
-};
-
-
 function App() {
-  const [todoState, dispatch] = useReducer(reducer, initialState);
-  console.log({ todoState });
+  const [state, dispatch] = useReducer(reducer, initialReducerState);
+
+  const { isSubmitting, userInput, itemList, message } = state
+
+  const buttonDisabled = userInput === '' || isSubmitting
+
+  async function addItemHandler() {
+    dispatch({ type: "set_is_submitting", value: true })
+    dispatch({ type: 'set_message', value: { type: 'submitting', value: 'Adding the item...' } })
+    await delay(3000);
+    dispatch({ type: "set_is_submitting", value: false })
+    if (containsSpecialChars(userInput)) {
+      dispatch({ type: 'set_message', value: { type: 'error', value: 'invalid charachter' } })
+      //show erorr
+      return
+    }
+    const nextId = itemList[itemList.length - 1].id + 1
+    dispatch({ type: 'set_item_list', value: userInput })
+    dispatch({ type: 'set_user_input', value: '' });
+    dispatch({ type: 'set_message', value: { type: 'success', value: 'Item added' } })
+  }
+
 
   return (
     <div className="App">
+      <RequirementsList />
       <h1>TODO list app</h1>
+      <input
+        placeholder='Task Title'
+        name='title'
+        value={userInput}
+        onChange={(e) => dispatch({ type: "set_user_input", value: e.target.value })}
+      />
+      <button disabled={buttonDisabled} onClick={addItemHandler}>Add</button>
+      {message.type === 'error' && <div>Error: {message?.value}</div>}
+      {message.type === 'success' && <div>Success: {message?.value}</div>}
+      {message.type === 'submitting' && <div>Adding item: {message?.value}</div>}
 
-      {Object.keys(todoState?.fields || {}).map(key =>
-        <input
-          key={key}
-          placeholder={key}
-          onChange={(e) => dispatch({ type: "updateField", value: { field: key, value: e.target.value } })}
-          value={todoState.fields[key]}
-        ></input>
-      )}
-      <button onClick={() => dispatch({ type: "addItem" })}>Add</button>
-
-      <h2>Current List</h2>
-      {todoState?.items?.map((todoItem) => (
-        <div key={todoItem.id}>
-          {todoItem.id} - {todoItem.date} - {todoItem.name}
-          <button>DELETE Item</button>
-        </div>
-      ))}
+      <ul>
+        {itemList.map(el => <li key={el?.id}>{el.id} - {el.title}</li>)}
+      </ul>
     </div>
   );
+}
+
+// For validation purposes
+function containsSpecialChars(str) {
+  const specialChars = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+  return specialChars.test(str);
 }
 
 export default App;
