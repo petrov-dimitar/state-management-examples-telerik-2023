@@ -1,0 +1,24 @@
+.App {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+  padding-top: 200px;
+}
+
+.App div{
+  width: 60%;
+}
+
+.margin_top{
+margin-top: 30px;
+}
+
+.error{
+  color: red;
+}
+
+.success{
+  color: green;
+}
