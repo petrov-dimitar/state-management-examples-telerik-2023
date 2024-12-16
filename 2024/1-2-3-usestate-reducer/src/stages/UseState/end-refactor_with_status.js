@@ -22,7 +22,7 @@ function App() {
   const error = formStatus === 'error'
 
   const totalProducts = products.length;
-  const isButtonDisabled = !newProduct.price || !newProduct.title
+  const isButtonDisabled = formStatus==='empty'
 
   const addNewItemToInventory = () => {
     const existingProduct = products.find(
@@ -42,11 +42,8 @@ function App() {
     setFormStatus('success');
   };
 
-  const DeleteProduct = (title) => {
-    setProducts(products.filter((product) => product.title !== title));
-  };
-
   const onChangeFormField = (fieldName, value) => {
+    setFormStatus('typing');
     setNewProduct(current => ({
       ...current,
       [fieldName]: value
@@ -55,6 +52,10 @@ function App() {
       setFormStatus('empty');
     }
   }
+
+  const DeleteProduct = (title) => {
+    setProducts(products.filter((product) => product.title !== title));
+  };
   
   return (
     <div className="App">
