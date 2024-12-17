@@ -1,16 +1,19 @@
 import './App.css';
 import React, { createContext, useState, useContext } from 'react';
 
+const userContext = createContext()
+
 function App() {
-  const [user, setUser] = useState('georg1234');
+  const [username, setUsername] = useState('gorg2213')
+
   return (
+    <userContext.Provider value={{ username, setUsername }}>
       <div className="App border">
         <h3>App Component</h3>
-        <div>User is {user}</div>
         <AddTodoComponent />
-        {/* How to pass user down to TodoItemNoteComponent */}
         <ListTodoComponent />
       </div>
+    </userContext.Provider>
   );
 }
 
@@ -41,10 +44,11 @@ function TodoItemComponent() {
 }
 
 function TodoItemNoteComponent() {
+  const { username } = useContext(userContext)
   return (
     <div className='border'>
       <h3 >Todo Item Note</h3>
-      <span>User: </span>
+      <span>User: {username}</span>
     </div>
   )
 }
